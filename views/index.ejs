@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>หน้าแรก</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <h1>ฐานข้อมูล</h1>
+    
+    <table>
+        <tr>
+            <th>Geometry Type</th>
+            <th>Coordinates</th>
+            <th>Class Name</th>
+            <th>Confidence</th>
+            <th>Actions</th>
+        </tr>
+        <% data.forEach(function(item) { %>
+            <tr>
+                <td><%= item.features[0].geometry.type %></td>
+                <td><%= item.features[0].geometry.coordinates.join(", ") %></td>
+                <td><%= item.features[0].properties.className %></td>
+                <td><%= item.features[0].properties.confidence %></td>
+                <td>
+                    <button class="delete" data-id="<%= item._id %>">Delete</button>
+                </td>
+            </tr>
+        <% }) %>
+    </table>
+
+    <h2>Add New Data</h2>
+<form action="/add" method="POST">
+    <input type="text" name="geometryType" placeholder="Geometry Type">
+    <!-- Remove "required" so that these fields are optional -->
+    <input type="number" name="coordinates0" placeholder="Latitude" step="any">
+    <input type="number" name="coordinates1" placeholder="Longitude" step="any">
+    <input type="text" name="className" placeholder="Class Name">
+    <input type="number" step="any" name="confidence" placeholder="Confidence">
+    <button type="submit">Add</button>
+</form>
+
+
+
+    <script>
+        document.querySelectorAll('.delete').forEach(button => {
+            button.addEventListener('click', async () => {
+                const id = button.getAttribute('data-id');
+                await fetch(`/delete/${id}`, { method: 'DELETE' });
+                window.location.reload();
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "body-parser": "^1.20.3",
+    "ejs": "^3.1.10",
+    "express": "^4.21.1",
+    "method-override": "^3.0.0",
+    "mongodb": "^6.9.0",
+    "path": "^0.12.7"
+  }
+}

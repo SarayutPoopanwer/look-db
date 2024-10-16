@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Data</title>
+</head>
+<body>
+    <h1>Edit GeoJSON Data</h1>
+
+    <form id="editForm">
+        <label for="geometryType">Geometry Type:</label>
+        <input type="text" name="geometryType" id="geometryType" value="<%= item.features[0].geometry.type %>">
+        
+        <label for="coordinates0">Latitude:</label>
+        <input type="number" name="coordinates0" id="coordinates0" value="<%= item.features[0].geometry.coordinates[0] %>" step="any">
+        
+        <label for="coordinates1">Longitude:</label>
+        <input type="number" name="coordinates1" id="coordinates1" value="<%= item.features[0].geometry.coordinates[1] %>" step="any">
+        
+        <label for="className">Class Name:</label>
+        <input type="text" name="className" id="className" value="<%= item.features[0].properties.className %>">
+        
+        <label for="confidence">Confidence:</label>
+        <input type="number" name="confidence" id="confidence" value="<%= item.features[0].properties.confidence %>" step="0.01">
+        
+        <button type="submit">Update</button>
+    </form>
+
+    <script>
+        const form = document.getElementById('editForm');
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();  // Prevent default form submission
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+
+            // Log the data to check what's being sent
+            console.log("Updating data:", data);
+
+            // Send PUT request with form data
+            try {
+                const response = await fetch(`/update/<%= item._id %>`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)  // Convert form data to JSON
+                });
+
+                // Check the response status
+                if (response.ok) {
+                    console.log("Update successful");
+                    window.location.href = '/'; // Redirect after successful update
+                } else {
+                    const errorText = await response.text();  // Get error text if any
+                    console.error('Update failed:', response.statusText, errorText);
+                    alert(`Update failed: ${response.statusText}\n${errorText}`); // Alert the user
+                }
+            } catch (error) {
+                console.error('Network error:', error);
+                alert('An error occurred while trying to update. Please try again.'); // Alert the user
+            }
+        });
+    </script>
+</body>
+</html>
